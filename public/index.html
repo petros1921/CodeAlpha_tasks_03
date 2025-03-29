@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Management Social Platform</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Content will be dynamically loaded here -->
+        <div id="loading">
+            <div class="spinner"></div>
+        </div>
+    </div>
+
+    <!-- Templates -->
+    <!-- Login Template -->
+    <template id="login-template">
+        <div class="auth-container">
+            <div class="auth-form">
+                <h1>Project Management Social Platform</h1>
+                <div class="tabs">
+                    <button class="tab active" data-tab="login">Login</button>
+                    <button class="tab" data-tab="register">Register</button>
+                </div>
+                <div class="tab-content" id="login-form">
+                    <div class="form-group">
+                        <label for="login-email">Email</label>
+                        <input type="email" id="login-email" placeholder="Enter your email">
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Password</label>
+                        <input type="password" id="login-password" placeholder="Enter your password">
+                    </div>
+                    <button id="login-btn" class="btn btn-primary">Login</button>
+                    <div class="error-message" id="login-error"></div>
+                </div>
+                <div class="tab-content hidden" id="register-form">
+                    <div class="form-group">
+                        <label for="register-username">Username</label>
+                        <input type="text" id="register-username" placeholder="Choose a username">
+                    </div>
+                    <div class="form-group">
+                        <label for="register-email">Email</label>
+                        <input type="email" id="register-email" placeholder="Enter your email">
+                    </div>
+                    <div class="form-group">
+                        <label for="register-password">Password</label>
+                        <input type="password" id="register-password" placeholder="Choose a password">
+                    </div>
+                    <div class="form-group">
+                        <label for="register-confirm-password">Confirm Password</label>
+                        <input type="password" id="register-confirm-password" placeholder="Confirm your password">
+                    </div>
+                    <button id="register-btn" class="btn btn-primary">Register</button>
+                    <div class="error-message" id="register-error"></div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- Dashboard Template -->
+    <template id="dashboard-template">
+        <div class="dashboard">
+            <header class="main-header">
+                <div class="logo">
+                    <h1>Project Management</h1>
+                </div>
+                <div class="search-bar">
+                    <input type="text" placeholder="Search projects or tasks...">
+                    <button><i class="fas fa-search"></i></button>
+                </div>
+                <div class="user-menu">
+                    <div class="user-info">
+                        <img id="user-avatar" src="/images/default-avatar.png" alt="User Avatar">
+                        <span id="username">Username</span>
+                    </div>
+                    <div class="dropdown">
+                        <button id="logout-btn">Logout</button>
+                    </div>
+                </div>
+            </header>
+            
+            <div class="main-container">
+                <aside class="sidebar">
+                    <nav>
+                        <ul>
+                            <li class="active"><a href="#" data-page="dashboard"><i class="fas fa-home"></i> Dashboard</a></li>
+                            <li><a href="#" data-page="projects"><i class="fas fa-project-diagram"></i> Projects</a></li>
+                            <li><a href="#" data-page="tasks"><i class="fas fa-tasks"></i> My Tasks</a></li>
+                            <li><a href="#" data-page="profile"><i class="fas fa-user"></i> Profile</a></li>
+                        </ul>
+                    </nav>
+                </aside>
+                
+                <main class="content">
+                    <div id="page-content">
+                        <!-- Dynamic content will be loaded here -->
+                    </div>
+                </main>
+            </div>
+        </div>
+    </template>
+
+    <!-- Dashboard Home Template -->
+    <template id="dashboard-home-template">
+        <div class="dashboard-home">
+            <h2>Welcome, <span id="welcome-username">User</span>!</h2>
+            
+            <div class="stats-container">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-project-diagram"></i></div>
+                    <div class="stat-info">
+                        <h3>Projects</h3>
+                        <p id="projects-count">0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-tasks"></i></div>
+                    <div class="stat-info">
+                        <h3>Tasks</h3>
+                        <p id="tasks-count">0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+                    <div class="stat-info">
+                        <h3>Completed</h3>
+                        <p id="completed-count">0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-clock"></i></div>
+                    <div class="stat-info">
+                        <h3>Pending</h3>
+                        <p id="pending-count">0</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="recent-activity">
+                <div class="section-header">
+                    <h3>Recent Activity</h3>
+                </div>
+                <div class="activity-list" id="activity-list">
+                    <!-- Activity items will be loaded here -->
+                    <div class="empty-state">No recent activity</div>
+                </div>
+            </div>
+            
+            <div class="quick-access">
+                <div class="section-header">
+                    <h3>Quick Access</h3>
+                    <button id="new-project-btn" class="btn btn-sm">New Project</button>
+                </div>
+                <div class="projects-grid" id="quick-projects">
+                    <!-- Project cards will be loaded here -->
+                    <div class="empty-state">No projects yet</div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- Projects Template -->
+    <template id="projects-template">
+        <div class="projects-page">
+            <div class="page-header">
+                <h2>My Projects</h2>
+                <button id="create-project-btn" class="btn btn-primary">Create Project</button>
+            </div>
+            
+            <div class="projects-filter">
+                <div class="filter-group">
+                    <label>Filter:</label>
+                    <select id="project-filter">
+                        <option value="all">All Projects</option>
+                        <option value="owned">Owned by me</option>
+                        <option value="member">Member</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Sort:</label>
+                    <select id="project-sort">
+                        <option value="newest">Newest</option>
+                        <option value="oldest">Oldest</option>
+                        <option value="name">Name</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="projects-grid" id="projects-grid">
+                <!-- Project cards will be loaded here -->
+                <div class="empty-state">No projects found</div>
+            </div>
+        </div>
+    </template>
+
+    <!-- Project Detail Template -->
+    <template id="project-detail-template">
+        <div class="project-detail">
+            <div class="page-header">
+                <div class="back-button">
+                    <a href="#" id="back-to-projects"><i class="fas fa-arrow-left"></i> Back to Projects</a>
+                </div>
+                <div class="project-title">
+                    <h2 id="project-title">Project Title</h2>
+                    <span class="project-owner" id="project-owner">Owner: Username</span>
+                </div>
+                <div class="project-actions">
+                    <button id="edit-project-btn" class="btn btn-sm"><i class="fas fa-edit"></i> Edit</button>
+                    <button id="invite-member-btn" class="btn btn-sm"><i class="fas fa-user-plus"></i> Invite</button>
+                </div>
+            </div>
+            
+            <div class="project-info">
+                <div class="project-description" id="project-description">
+                    Project description goes here...
+                </div>
+                
+                <div class="project-members">
+                    <h4>Team Members</h4>
+                    <div class="members-list" id="members-list">
+                        <!-- Members will be loaded here -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="project-tasks">
+                <div class="section-header">
+                    <h3>Tasks</h3>
+                    <button id="add-task-btn" class="btn btn-sm">Add Task</button>
+                </div>
+                
+                <div class="task-board">
+                    <div class="task-column">
+                        <div class="column-header">
+                            <h4>To Do</h4>
+                        </div>
+                        <div class="task-list" id="todo-tasks">
+                            <!-- Todo tasks will be loaded here -->
+                        </div>
+                    </div>
+                    
+                    <div class="task-column">
+                        <div class="column-header">
+                            <h4>In Progress</h4>
+                        </div>
+                        <div class="task-list" id="inprogress-tasks">
+                            <!-- In progress tasks will be loaded here -->
+                        </div>
+                    </div>
+                    
+                    <div class="task-column">
+                        <div class="column-header">
+                            <h4>Completed</h4>
+                        </div>
+                        <div class="task-list" id="completed-tasks">
+                            <!-- Completed tasks will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- Task Detail Template -->
+    <template id="task-detail-template">
+        <div class="task-detail-modal">
+            <div class="modal-header">
+                <h3 id="task-title">Task Title</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="task-info">
+                    <div class="info-group">
+                        <label>Status:</label>
+                        <select id="task-status">
+                            <option value="todo">To Do</option>
+                            <option value="inprogress">In Progress</option>
+                            <option value="completed">Completed</option>
+                        </select>
+                    </div>
+                    <div class="info-group">
+                        <label>Assigned To:</label>
+                        <select id="task-assigned">
+                            <option value="">Unassigned</option>
+                            <!-- Members will be loaded here -->
+                        </select>
+                    </div>
+                    <div class="info-group">
+                        <label>Due Date:</label>
+                        <input type="date" id="task-due-date">
+                    </div>
+                </div>
+                
+                <div class="task-description">
+                    <h4>Description</h4>
+                    <p id="task-description">Task description goes here...</p>
+                </div>
+                
+                <div class="task-comments">
+                    <h4>Comments</h4>
+                    <div class="comments-list" id="comments-list">
+                        <!-- Comments will be loaded here -->
+                    </div>
+                    <div class="add-comment">
+                        <textarea id="comment-input" placeholder="Add a comment..."></textarea>
+                        <button id="add-comment-btn" class="btn btn-sm">Post</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- Create Project Modal Template -->
+    <template id="create-project-template">
+        <div class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Create New Project</h3>
+                    <button class="close-modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="project-title">Project Title</label>
+                        <input type="text" id="project-title" placeholder="Enter project title">
+                    </div>
+                    <div class="form-group">
+                        <label for="project-description">Description</label>
+                        <textarea id="project-description" placeholder="Enter project description"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Team Members</label>
+                        <div class="members-search">
+                            <input type="text" id="member-search" placeholder="Search users...">
+                            <div id="search-results" class="search-results"></div>
+                        </div>
+                        <div id="selected-members" class="selected-members"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary close-modal">Cancel</button>
+                    <button id="save-project-btn" class="btn btn-primary">Create Project</button>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- Create Task Modal Template -->
+    <template id="create-task-template">
+        <div class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Create New Task</h3>
+                    <button class="close-modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="task-title">Task Title</label>
+                        <input type="text" id="task-title" placeholder="Enter task title">
+                    </div>
+                    <div class="form-group">
+                        <label for="task-description">Description</label>
+                        <textarea id="task-description" placeholder="Enter task description"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="task-assigned">Assigned To</label>
+                        <select id="task-assigned">
+                            <option value="">Unassigned</option>
+                            <!-- Members will be loaded here -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="task-status">Status</label>
+                        <select id="task-status">
+                            <option value="todo">To Do</option>
+                            <option value="inprogress">In Progress</option>
+                            <option value="completed">Completed</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="task-due-date">Due Date</label>
+                        <input type="date" id="task-due-date">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary close-modal">Cancel</button>
+                    <button id="save-task-btn" class="btn btn-primary">Create Task</button>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- Scripts -->
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
